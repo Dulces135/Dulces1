@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dulcería Tere</title>
+    <!-- Librería para el fondo animado -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <style>
+        :root {
+            --color-primario: #ff6b6b;
+            --color-secundario: #4ecdc4;
+            --fondo: #f7f9fa;
+            --texto: #333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: var(--texto);
+        }
+
+        /* Fondo animado optimizado para móviles */
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            top: 0;
+            left: 0;
+            background-color: var(--fondo);
+            pointer-events: none; 
+        }
+
+        header {
+            background-color: var(--color-primario);
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        header h1 { margin: 0; font-size: 20px; }
+
+        .cart-summary {
+            background: white;
+            color: var(--color-primario);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .container {
+            display: flex;
+            padding: 20px;
+            gap: 20px;
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .productos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            flex: 3;
+        }
+
+        .producto-card {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .img-placeholder {
+            width: 100%;
+            height: 150px;
+            object-fit: contain;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .precio { color: var(--color-secundario); font-size: 1.2em; font-weight: bold; margin: 10px 0; }
+
+        button.agregar, button.btn-whatsapp {
+            background-color: var(--color-secundario);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .carrito-panel {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            flex: 1;
+            height: fit-content;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 80px;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .container { flex-direction: column; padding: 10px; }
+            .productos-grid { grid-template-columns: 1fr; }
+            .carrito-panel { position: static; margin-bottom: 20px; }
+            header { padding: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="particles-js"></div>
+
+    <header>
+        <h1>🍬 Dulcería Tere</h1>
+        <div class="cart-summary">🛒 <span id="cart-count">0</span> | $<span id="cart-total-header">0.00</span></div>
+    </header>
+
+    <div class="container">
+        <div class="productos-grid" id="productos-grid"></div>
+
+        <div class="carrito-panel">
+            <h2>Tu Pedido</h2>
+            <ul id="lista-carrito" style="list-style:none; padding:0;"></ul>
+            <h3>Total: $<span id="cart-total-panel">0.00</span></h3>
+            <button class="btn-whatsapp" style="background-color: #25D366;" onclick="enviarWhatsApp('525527515022')">📲 Pedir por WhatsApp</button>
+        </div>
+    </div>
+
+    <!-- Derechos de autor restaurados -->
+    <footer style="text-align: center; padding: 20px; font-size: 0.8em; color: #777;">
+        &copy; 2026 Dulcería Tere. Todos los derechos reservados.
+    </footer>
+
+    <script>
+        particlesJS("particles-js", {
+            "particles": { "number": { "value": 50 }, "color": { "value": "#ff6b6b" }, "line_linked": { "enable": true, "color": "#4ecdc4" }, "move": { "speed": 1 } },
+            "interactivity": { "events": { "onhover": { "enable": true, "mode": "repulse" } } }
+        });
+
+        const inventario = [
+            { id: 1, nombre: "Papas Sol Tacos", precio: 16.00, img: "sol.jpg" },
+            { id: 2, nombre: "Papas Sol Solchesitos", precio: 15.00, img: "sol1.jpg" },
+            { id: 3, nombre: "Cachetadas", precio: 1.50, img: "cachetadas.jpg" },
+            { id: 4, nombre: "Papas Sol Nachos", precio: 17.00, img: "nachos.jpg" },
+            { id: 5, nombre: "Chicharrones", precio: 5.00, img: "chicharrones.jpeg" },
+            { id: 6, nombre: "Mazapan Chocolate", precio: 4.50, img: "mazapan.jpg" },
+            { id: 7, nombre: "Gomitas Tiburon", precio: 1.00, img: "tiburones.jpg" },
+            { id: 8, nombre: "Trufas", precio: 2.00, img: "trufas.jpg" },
+            { id: 9, nombre: "Gatitos", precio: 0.50, img: "gatitos.jpg" },
+            { id: 10, nombre: "Oblea Cajeta", precio: 2.50, img: "oblea.jpg" },
+            { id: 11, nombre: "Frijolitos", precio: 1.00, img: "frijolitos.jpg" },
+            { id: 12, nombre: "Duvalin", precio: 2.50, img: "duvalin.jpg" },
+            { id: 13, nombre: "Nubes", precio: 2.00, img: "nubes.jpg" },
+            { id: 14, nombre: "Lunetas", precio: 4.00, img: "lunetas.jpg" },
+            { id: 15, nombre: "Chicles Bubaloo", precio: 1.50, img: "chicles.jpg" },
+            { id: 16, nombre: "Paletas", precio: 3.00, img: "paletas.jpg" },
+            { id: 17, nombre: "Tubi Charritos", precio: 15.00, img: "sol2.jpg" },
+            { id: 18, nombre: "Pachicleta", precio: 3.50, img: "pachicleta.jpg" },
+            { id: 19, nombre: "Dulce de Coco", precio: 2.00, img: "coco.jpg" }
+        ];
+
+        let carrito = [];
+        const grid = document.getElementById('productos-grid');
+        inventario.forEach(p => {
+            const div = document.createElement('div');
+            div.className = 'producto-card';
+            div.innerHTML = `<img src="${p.img}" class="img-placeholder"><h3>${p.nombre}</h3><div class="precio">$${p.precio.toFixed(2)}</div><button class="agregar" onclick="agregar(${p.id}, '${p.nombre}', ${p.precio})">Agregar</button>`;
+            grid.appendChild(div);
+        });
+
+        function agregar(id, nombre, precio) {
+            const item = carrito.find(i => i.id === id);
+            item ? item.cantidad++ : carrito.push({ id, nombre, precio, cantidad: 1 });
+            actualizar();
+        }
+
+        function actualizar() {
+            const lista = document.getElementById('lista-carrito');
+            lista.innerHTML = '';
+            let total = 0, cant = 0;
+            carrito.forEach(i => {
+                total += i.precio * i.cantidad;
+                cant += i.cantidad;
+                lista.innerHTML += `<li style="display:flex; justify-content:space-between; margin-bottom:10px;">${i.cantidad}x ${i.nombre} <button onclick="eliminar(${i.id})" style="background:red; color:white; border:none; border-radius:3px;">X</button></li>`;
+            });
+            document.getElementById('cart-count').innerText = cant;
+            document.getElementById('cart-total-header').innerText = total.toFixed(2);
+            document.getElementById('cart-total-panel').innerText = total.toFixed(2);
+        }
+
+        function eliminar(id) {
+            carrito = carrito.filter(i => i.id !== id);
+            actualizar();
+        }
+
+        function enviarWhatsApp(num) {
+            if(carrito.length === 0) return alert("Carrito vacío");
+            // Total restaurado en el mensaje
+            let total = 0;
+            carrito.forEach(i => total += i.precio * i.cantidad);
+            let msg = "Pedido Dulcería Tere:%0A";
+            carrito.forEach(i => msg += `- ${i.cantidad}x ${i.nombre}%0A`);
+            msg += `%0A*TOTAL: $${total.toFixed(2)}*`;
+            window.open(`https://wa.me/${num}?text=${msg}`, '_blank');
+        }
+    </script>
+</body>
+</html>
